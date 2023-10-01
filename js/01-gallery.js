@@ -31,18 +31,24 @@ function showOriginalImage(event) {
   const galleryItem = galleryItems.find(
     ({ original }) => original === originalImage
   );
-
-  const instance = basicLightbox.create(`
-	<img class="gallery__image js-close-img" src="${galleryItem.original}" alt="${galleryItem.description}">
-`);
+  const instance = basicLightbox.create(
+    `
+  	<img class="gallery__image js-close-img" src="${galleryItem.original}" alt="${galleryItem.description}">
+  `,
+    {
+      onShow: (instance) => {
+        document.addEventListener("keydown", modalClose);
+      },
+      onClose: (instance) => {
+        document.removeEventListener("keydown", modalClose);
+      },
+    }
+  );
 
   instance.show();
-
-  document.addEventListener("keydown", modalClose);
-
-  function modalClose(event) {
+  function modalClose(evt) {
     // console.log(event.code);
-    if (event.code !== "Escape") return;
+    if (evt.code !== "Escape") return;
     instance.close();
   }
 }
